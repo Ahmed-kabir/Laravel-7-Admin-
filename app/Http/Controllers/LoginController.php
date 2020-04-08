@@ -25,7 +25,8 @@ class LoginController extends Controller
      */
     public function register()
     {
-        echo 'success';
+        $data['title']= 'Register';
+        return view('register', $data);
     }
 
     /**
