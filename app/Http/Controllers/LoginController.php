@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Login;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+
 
 class LoginController extends Controller
 {
@@ -27,6 +29,32 @@ class LoginController extends Controller
     {
         $data['title']= 'Register';
         return view('register', $data);
+    }
+
+    public function setPasswordForsession(Request $request)
+    {
+        $password = $request->input('password');
+//        return 'fine';
+//         return json_encode($password);
+        Session::put('password', $password);
+        $password = Session::get('password');
+//        $value = session('password');
+        echo $password;
+//        echo 'done';
+    }
+
+    public function chekPassword(Request $request)
+    {
+        $retype_password = $request->input('retype_password');
+        $password = Session::get('password');
+        if($retype_password == $password)
+        {
+            echo 'password match';
+        }
+        else
+        {
+            echo 'missmatch';
+        }
     }
 
     /**

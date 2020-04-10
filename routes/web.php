@@ -18,3 +18,5 @@ Route::get('/', function () {
 });
 Route::get('/login', 'LoginController@login');
 Route::get('/register', 'LoginController@register');
+Route::post('/setPasswordForsession', 'LoginController@setPasswordForsession');
+Route::post('/chekPassword', 'LoginController@chekPassword');

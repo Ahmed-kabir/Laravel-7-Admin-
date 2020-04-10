@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="{{asset('assets/dist/css/adminlte.min.css')}}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+
 </head>
 <body class="hold-transition register-page">
 <div class="register-box">
@@ -47,7 +50,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Password" name="password">
+                    <input type="password" class="form-control" placeholder="Password" id="password" name="password" onblur="setPassword();" >
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -55,7 +58,7 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Retype password" name="retype_password">
+                    <input type="password" class="form-control" placeholder="Retype password" id="retype_password" name="retype_password" onkeyup="chekPassword();">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -73,7 +76,7 @@
                     </div>
                     <!-- /.col -->
                     <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                        <button type="submit" class="btn btn-primary btn-block" id="register">Register</button>
                     </div>
                     <!-- /.col -->
                 </div>
@@ -85,12 +88,15 @@
                 <a href="#" class="btn btn-block btn-primary">
                     <i class="fab fa-facebook mr-2"></i>
                     Sign up using Facebook
+
                 </a>
                 <a href="#" class="btn btn-block btn-danger">
                     <i class="fab fa-google-plus mr-2"></i>
                     Sign up using Google+
                 </a>
             </div>
+
+
 
             <a href="login.html" class="text-center">I already have a membership</a>
         </div>
@@ -105,5 +111,76 @@
 <script src="{{asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{asset('assets/dist/js/adminlte.min.js')}}"></script>
+
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+
+
+</script>
+
+
+
+<script>
+    document.getElementById("register").disabled = true;
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+
+    function setPassword() {
+        var password = $('#password').val();
+        var url = '{{url('/setPasswordForsession') }}'
+        // alert(password);
+        $.ajax({
+            type:'POST',
+            url:url,
+            dataType:'html',
+            {{--data:'_token = <?php echo csrf_token() ?>',--}}
+            data:{password : password},
+            success:function(response) {
+
+               console.log(response);
+                // $("#msg").html(data.msg);
+            },
+            error:function (error) {
+            console.log(error);
+            }
+        });
+    }
+
+    function chekPassword() {
+        var retype_password = $('#retype_password').val();
+        var url = '{{url('/chekPassword')}}'
+
+        $.ajax({
+            type:'POST',
+            url:url,
+            dataType:'html',
+            {{--data:'_token = <?php echo csrf_token() ?>',--}}
+            data:{retype_password : retype_password},
+            success:function(data) {
+                if(data == 'password match')
+                {
+                    document.getElementById("register").disabled = false;
+                }
+                else
+                    {
+                        document.getElementById("register").disabled = true;
+                    }
+
+                console.log(data);
+                // $("#msg").html(data.msg);
+            },
+            error:function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+</script>
+
+
+
 </body>
 </html>
